@@ -8,6 +8,11 @@ import { UserOutlined } from '@ant-design/icons';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input, Space } from 'antd';
 
+// import sweetalert2 to this component
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/dist/sweetalert2.css";
+import "sweetalert2/dist/sweetalert2.js";
+
 
 function Login(){
     
@@ -24,21 +29,38 @@ function Login(){
             const auth = getAuth(firebaseApp);
             signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                // Signed in 
-                const user = userCredential.user;
-                alert("Signed in!");
-                navigate("/");
-                // ...
-            })
-            .catch((error) => {
-                alert("Incorrect or missing credentials");
-            });  
-        }else{
-            alert('Incorrect or missing credentials!');
-        }
-    
-    }
 
+            // Signed in 
+            const user = userCredential.user;
+            Swal.fire({
+            title: "You successfully logged in!",
+            
+            icon: "success"
+        });
+
+        
+            navigate("/"); 
+            
+        // ...
+        })
+
+
+                .catch((error) => { 
+                    alert("error!");
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+        });
+        }else{
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Missing crredentials!",
+                footer: '<a href="#">Please fill in the missing fields</a>'
+            });
+            
+        }
+
+    }
 
 
 
