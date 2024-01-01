@@ -4,6 +4,11 @@ import { getFirestore, collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc
 import firebaseApp from "./firebaseConfig.jsx";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+// import sweetalert2 to this component
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import "sweetalert2/dist/sweetalert2.css";
+import "sweetalert2/dist/sweetalert2.js";
+
 
 function EmployeeList(){
 
@@ -17,6 +22,7 @@ function EmployeeList(){
 
 
     useEffect(() => {  
+
 
         // Initialize Cloud Firestore and get a reference to the service.
         const db = getFirestore(firebaseApp);    
@@ -100,17 +106,45 @@ function EmployeeList(){
 
     const deleteEmployee = (id) => {
 
-        const [tempEmp] = employees.filter(tempEmp => employee.id === id);
+        const [tempEmp] = employeeList.filter(tempEmp => employee.id === id);
 
-        const employeeID = String(id);
+        // const employeeID = String(id);
         // initialize config
         const db = getFirestore(firebaseApp);    
+         
         
-        
-        confirm(`Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.last}?`).then(
-            deleteDoc(doc(db, "employees", employeeID))
+        // confirm(`Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`).then(
+        //     deleteDoc(doc(db, "employees", tempEmp.employee_id))
             
-        );
+        // );
+
+
+
+
+        Swal.fire({
+            icon: "question",
+            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`,
+            showDenyButton: true,
+            confirmButtonText: "Delete",
+            denyButtonText: "Cancel",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteDoc(doc(db, "employees", tempEmp.employee_id));
+                Swal.fire({
+                    
+                    icon: "success",
+                    title: "Success!",
+                    text: `${tempEmp.firstname} ${tempEmp.lastname} has been deleted.`,
+                });
+            } else if (result.isDenied) {
+                Swal.fire({
+                   
+                    icon: "success",
+                    title: "Cancelled",
+                    text: "Deleting records has been cancelled.",
+                });
+            }
+        });
         
     }
 
