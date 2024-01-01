@@ -123,7 +123,7 @@ function EmployeeList(){
 
         Swal.fire({
             icon: "question",
-            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`,
+            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname}?`,
             showDenyButton: true,
             confirmButtonText: "Delete",
             denyButtonText: "Cancel",
@@ -152,7 +152,7 @@ function EmployeeList(){
 if(authenticated){
     return(
         <section className="pt-5 mt-3">
-            <h1 className="fw-bold">Hello, { userProperties.displayName }  </h1>
+            <h1 className="fw-bold">Welcome, { userProperties.displayName }  </h1>
             {/* {userProperties.displayName} */}
             <p>This is a list of employee records.</p>
             <hr />
