@@ -15,6 +15,7 @@ import React from 'react';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Input, Space, Tooltip  } from 'antd';
+import Modal from "antd/es/modal/Modal.js";
 
 
 function EmployeeList(){
@@ -126,7 +127,8 @@ function EmployeeList(){
         console.error("Error updating document: ", error);
       });
 
-
+      alert("Sucessfully Updated!");
+      
   }
 
       
