@@ -22,8 +22,6 @@ function EmployeeList(){
     const [employee, setEmployee] = useState({});
     const [employeeList, setEmployeeList] = useState([]);
 
-    const [editToggle, setEditToggle] = useState(false);
-
     const [authenticated, setAuthenticated] = useState(false);
     const [userProperties, setUserProperties] = useState({});
 
@@ -94,41 +92,13 @@ function EmployeeList(){
         });
       };
       
-  
-    // const handleEmployeeUpdate = () => {
-    //   const employeeRef = doc(db, "employees", employee.employeeID);
-  
-    //   updateDoc(employeeRef, {
-    //     firstname: employee.firstname,
-    //     lastname: employee.lastname,
-    //     email: employee.email,
-    //     phoneNumber: employee.phoneNumber,
-    //     address: employee.address,
-    //     department: employee.department,
-    //     // Add other fields as needed
-    //   }).then(() => {
-    //     setEditToggle(false);
-    //     setEmployee({
-    //       // Clear all fields after update
-    //       firstname: '',
-    //       lastname: '',
-    //       email: '',
-    //       phoneNumber: '',
-    //       address: '',
-    //       department: '',
-    //     });
-    //   }).catch((error) => {
-    //     // Handle error if update fails
-    //     console.error("Error updating document: ", error);
-    //   });
-    // };
 
 
     const handleEmployeeUpdate = () => {
       // Initialize Cloud Firestore and get a reference to the service.
       const db = getFirestore(firebaseApp);   
       
-          const employeeRef = doc(db, "employees", employee.employee_id);
+          const employeeRef = doc(db, "employees", employee.employeeID);
 
       updateDoc(employeeRef, {     
           firstname: employee.firstname,
@@ -137,13 +107,26 @@ function EmployeeList(){
           department: employee.department,
           email: employee.email,
           phone: employee.phone,
+      }).then(() => {
+
+         // setEditToggle(false);
+         //After updating.. set the textbox of modal to blank
+        setEmployee({
+          firstname: '',
+          lastname: '',
+          jobTitle: '',
+          department: '',
+          email: '',
+          phone: '',
+        });
+
+
+      }).catch((error) =>{
+         // Handle error if update fails
+        console.error("Error updating document: ", error);
       });
 
-      setEditToggle(false);
-      setEmployee({
-      firstname: '',
-      lastname: '',
-      });
+
   }
 
       
@@ -217,7 +200,6 @@ if(authenticated){
             <hr />
             
             <div className="bg-dark rounded mt-3 mb-2">
-                <h3 className="fw-bold">{employee.firstname} {employee.lastname} </h3>
                 <button className="btn btn-dark" onClick={navigateAddEmployee}>➕ Add Employee</button>
             </div>
             
@@ -280,7 +262,7 @@ if(authenticated){
                             <div className="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-xl">
                               <div className="modal-content">
                                 <div className="modal-header">
-                                  <h1 className="modal-title fs-5" id="exampleModalLabel">
+                                  <h1 className="modal-title fs-5 fw-bold" id="exampleModalLabel">
                                     Employee Details
                                   </h1>
                                   <button
@@ -360,19 +342,20 @@ if(authenticated){
                                                   phone: e.target.value
                                                 })}
                                                 value={employee.phone}
+                                                min={11}
                                                 type="number"  />
                                             </tr>
                                           </tbody>
-                                          
+                        
                                         </table>
                                       </div>
                                     </div>
                                   </div>
-                                  <button className="btn btn-success ms-3" onClick={() => handleEmployeeUpdate()}>Update</button>
+                                    <button className="btn btn-success ms-3" onClick={() => handleEmployeeUpdate()}>Update</button>
                                 </div>
-                                </div>
-                                </div>
-                                </div>
+                              </div>
+                            </div>
+                          </div>
               
                         </td>
 

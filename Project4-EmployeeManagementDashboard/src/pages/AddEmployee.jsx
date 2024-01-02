@@ -127,7 +127,8 @@ function AddEmployee(){
                         })} 
                         value={employee.phone}
                         className="form-control" 
-                        type="number"         
+                        type="number" 
+                        min={11}        
                      />
                 </div>
                 
