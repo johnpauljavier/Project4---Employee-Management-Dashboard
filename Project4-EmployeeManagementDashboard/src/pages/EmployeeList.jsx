@@ -8,6 +8,13 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/dist/sweetalert2.css";
 import "sweetalert2/dist/sweetalert2.js";
+import EditEmployee from "./EditEmployee.jsx";
+
+// Import AntDesign
+import React from 'react';
+import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons'
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Input, Space, Tooltip  } from 'antd';
 
 
 function EmployeeList(){
@@ -68,57 +75,77 @@ function EmployeeList(){
     }, [])
 
 
-    const handleEmployeeDetails = (e) => {
-        navigate("/employeecard");
-    }
-
     const navigateAddEmployee = () => {
         navigate('/AddEmployee');
     }
 
 
-    const updateEmployee = (employeeID, firstname, lastname, email, phoneNumber, address, department) => {
-        setEditToggle(true);
+    const updateEmployee = (employeeID, firstname, lastname, jobTitle, department, email, phone) => {
+        // setEditToggle(true);
         setEmployee({
-          employeeID: employeeID,
+          employeeID: employeeID, 
           firstname: firstname,
           lastname: lastname,
-          email: email,
-          phoneNumber: phoneNumber,
-          address: address,
+          jobTitle: jobTitle,
           department: department,
+          email: email,
+          phone: phone
           // Add other fields as needed
         });
       };
       
   
-    const handleEmployeeUpdate = () => {
-      const employeeRef = doc(db, "employees", employee.employeeID);
+    // const handleEmployeeUpdate = () => {
+    //   const employeeRef = doc(db, "employees", employee.employeeID);
   
-      updateDoc(employeeRef, {
-        firstname: employee.firstname,
-        lastname: employee.lastname,
-        email: employee.email,
-        phoneNumber: employee.phoneNumber,
-        address: employee.address,
-        department: employee.department,
-        // Add other fields as needed
-      }).then(() => {
-        setEditToggle(false);
-        setEmployee({
-          // Clear all fields after update
-          firstname: '',
-          lastname: '',
-          email: '',
-          phoneNumber: '',
-          address: '',
-          department: '',
-        });
-      }).catch((error) => {
-        // Handle error if update fails
-        console.error("Error updating document: ", error);
+    //   updateDoc(employeeRef, {
+    //     firstname: employee.firstname,
+    //     lastname: employee.lastname,
+    //     email: employee.email,
+    //     phoneNumber: employee.phoneNumber,
+    //     address: employee.address,
+    //     department: employee.department,
+    //     // Add other fields as needed
+    //   }).then(() => {
+    //     setEditToggle(false);
+    //     setEmployee({
+    //       // Clear all fields after update
+    //       firstname: '',
+    //       lastname: '',
+    //       email: '',
+    //       phoneNumber: '',
+    //       address: '',
+    //       department: '',
+    //     });
+    //   }).catch((error) => {
+    //     // Handle error if update fails
+    //     console.error("Error updating document: ", error);
+    //   });
+    // };
+
+
+    const handleEmployeeUpdate = () => {
+      // Initialize Cloud Firestore and get a reference to the service.
+      const db = getFirestore(firebaseApp);   
+      
+          const employeeRef = doc(db, "employees", employee.employee_id);
+
+      updateDoc(employeeRef, {     
+          firstname: employee.firstname,
+          lastname: employee.lastname,
+          jobTitle: employee.jobTitle,
+          department: employee.department,
+          email: employee.email,
+          phone: employee.phone,
       });
-    };
+
+      setEditToggle(false);
+      setEmployee({
+      firstname: '',
+      lastname: '',
+      });
+  }
+
       
 
 
@@ -163,22 +190,22 @@ function EmployeeList(){
     }
 
 
-    const handleViewMore = (id, firstname, lastname, jobTitle, department, email, phone) => {
-        const selectedEmployee = employeeList.find(selectedEmployee => selectedEmployee.employee_id === id);
+    // const handleViewMore = (id, firstname, lastname, jobTitle, department, email, phone) => {
+    //     const selectedEmployee = employeeList.find(selectedEmployee => selectedEmployee.employee_id === id);
       
-        if (selectedEmployee) {
-          // Display more details or perform actions with the selected employee's information
-          console.log(selectedEmployee); // For testing purposes
-        //   setEmployeeList(selectedEmployee);
+    //     if (selectedEmployee) {
+    //       // Display more details or perform actions with the selected employee's information
+    //       console.log(selectedEmployee); // For testing purposes
+    //     //   setEmployeeList(selectedEmployee);
       
-          // Update state or perform actions to display more details of the selected employee
-          // For example:
-          // setSelectedEmployee(selectedEmployee);
-          // Open a modal to display the employee's details
-        } else {
-          console.error("Employee not found");
-        }
-      };
+    //       // Update state or perform actions to display more details of the selected employee
+    //       // For example:
+    //       // setSelectedEmployee(selectedEmployee);
+    //       // Open a modal to display the employee's details
+    //     } else {
+    //       console.error("Employee not found");
+    //     }
+    //   };
 
 
 if(authenticated){
@@ -188,8 +215,7 @@ if(authenticated){
             {/* {userProperties.displayName} */}
             <p>This is a list of <span className="text-danger fw-bold">OnePlus</span> employee records.</p>
             <hr />
-
-
+            
             <div className="bg-dark rounded mt-3 mb-2">
                 <h3 className="fw-bold">{employee.firstname} {employee.lastname} </h3>
                 <button className="btn btn-dark" onClick={navigateAddEmployee}>➕ Add Employee</button>
@@ -226,17 +252,132 @@ if(authenticated){
                         <td>{employeeRecord.email}</td> 
                         <td>{employeeRecord.phone}</td>
                         <td>{employeeRecord.status}</td>
-                        <td>
-                            <button type="button" onClick={()=>handleViewMore(employeeRecord.employee_id, employee.firstname, employee.lastname)} 
-                            className="btn btn-dark"
-                            data-bs-toggle="modal"
-                            data-bs-target={`#employeeDetails-${employee.id}`}
+                        <td>          
+                            <button type="button" 
+                              onClick={()=>updateEmployee(employeeRecord.employee_id, employeeRecord.firstname, employeeRecord.lastname, employeeRecord.jobTitle, employeeRecord.department, employeeRecord.email, employeeRecord.phone)} 
+                              className="btn btn-dark"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#employeeDetails-${employeeRecord.employee_id}`}
                             >✏️</button>
+
+                            {/* <button type="button" onClick={()=>handleViewMore(employeeRecord.employee_id) ? ( <EditEmployee /> ): ( <p>hello</p> ) } 
+                            className="btn btn-dark"
+                            // data-bs-toggle="modal"
+                            // data-bs-target={`#employeeDetails-${employeeRecord.employee_id}`}
+                            >✏️</button> */}
                             <button className="btn btn-secondary ms-1" onClick={() => deleteEmployee(employeeRecord.employee_id)}>🗑️</button>
                         </td>
-                     
+
+                        <td>
+                                       {/* Modal */}
+                          <div
+                            className="modal fade"
+                            id={`employeeDetails-${employeeRecord.employee_id}`}
+                            tabIndex="-1"
+                            aria-labelledby={`employeeDetailsLabel-${employeeRecord.employee_id}`}
+                            aria-hidden="true"
+                          >
+                            <div className="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-xl">
+                              <div className="modal-content">
+                                <div className="modal-header">
+                                  <h1 className="modal-title fs-5" id="exampleModalLabel">
+                                    Employee Details
+                                  </h1>
+                                  <button
+                                    type="button"
+                                    className="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                  ></button>
+                                </div>
+                                <div className="modal-body">
+                                  <div className="mb-2 p-5 border mt-5 shadow-md">
+                                    <div className="card-body">
+                                      <div className="table-responsive">
+                                        <table className="table">
+                                          <tbody className="row m-2 border p-2 shadow">
+                                            <tr className="row">
+                                              <th className="col-md-6 col-sm-12" scope="row">First Name</th>
+                                              <input id="firstname"
+                                                className="col-md-6 col-sm-12"
+                                                onChange={(e)=>setEmployee({
+                                                  ...employee,
+                                                  firstname: e.target.value
+                                                })}
+                                                value={employee.firstname}
+                                                type="text"  />
+                                            </tr>
+                                            <tr className="row">
+                                              <th className="col-md-6 col-sm-12" scope="row">Last Name</th>
+                                              <input id="lastname"
+                                                className="col-md-6 col-sm-12"
+                                                onChange={(e)=>setEmployee({
+                                                  ...employee,
+                                                  lastname: e.target.value
+                                                })}
+                                                value={employee.lastname}
+                                                type="text"  />
+                                            </tr>
+                                            <tr className="row">
+                                              <th className="col-md-6 col-sm-12" scope="row">Job Title</th>
+                                              <input id="jobTitle"
+                                                className="col-md-6 col-sm-12"
+                                                onChange={(e)=>setEmployee({
+                                                  ...employee,
+                                                  jobTitle: e.target.value
+                                                })}
+                                                value={employee.jobTitle}
+                                                type="text"  />
+                                            </tr>
+                                            <tr className="row">
+                                              <th className="col-md-6 col-sm-12" scope="row">Department</th>
+                                              <input id="department" 
+                                                className="col-md-6 col-sm-12"
+                                                onChange={(e)=>setEmployee({
+                                                  ...employee,
+                                                  department: e.target.value
+                                                })}
+                                                value={employee.department}
+                                                type="text"  />
+                                            </tr>
+                                            <tr className="row">
+                                              <th className="col-md-6 col-sm-12" scope="row">Email</th>
+                                              <input id="email"
+                                                className="col-md-6 col-sm-12"
+                                                onChange={(e)=>setEmployee({
+                                                  ...employee,
+                                                  email: e.target.value
+                                                })}
+                                                value={employee.email}
+                                                type="email"  />
+                                            </tr>
+                                            <tr className="row">
+                                              <th className="col-md-6 col-sm-12" scope="row">Contact Number</th>
+                                              <input id="phone"
+                                                className="col-md-6 col-sm-12"
+                                                onChange={(e)=>setEmployee({
+                                                  ...employee,
+                                                  phone: e.target.value
+                                                })}
+                                                value={employee.phone}
+                                                type="number"  />
+                                            </tr>
+                                          </tbody>
+                                          
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <button className="btn btn-success ms-3" onClick={() => handleEmployeeUpdate()}>Update</button>
+                                </div>
+                                </div>
+                                </div>
+                                </div>
+              
+                        </td>
+
                     </tr>
-            
+                
                     
                 ))
                 
@@ -252,69 +393,9 @@ if(authenticated){
             
          </tbody>
         </table>
-
-                                       {/* Modal */}
-             {/* <div
-              className="modal fade"
-              id={`employeeDetails-${employeeRecord.employee_id}`}
-              tabIndex="-1"
-              aria-labelledby={`employeeDetailsLabel-${employeeRecord.employee_id}`}
-              aria-hidden="true"
-            >
-              <div className="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-xl">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="exampleModalLabel">
-                      Employee Details
-                    </h1>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="mb-5 p-5 border mt-5 shadow-md">
-                      <div className="card-body">
-                        <div className="table-responsive">
-                          <table className="table">
-                            <tbody className="row m-2 border p-2 shadow">
-                              <tr className="row">
-                                <th className="col-md-6 col-sm-12" scope="row">First Name</th>
-                                <td className="col-md-6 col-sm-12">{employeeRecord.firstname}</td>
-                              </tr>
-                              <tr className="row">
-                                <th className="col-md-6 col-sm-12" scope="row">Last Name</th>
-                                <td className="col-md-6 col-sm-12">{employeeRecord.lastname}</td>
-                              </tr>
-                              <tr className="row">
-                                <th className="col-md-6 col-sm-12" scope="row">Job Title</th>
-                                <td className="col-md-6 col-sm-12">{employeeRecord.jobTitle}</td>
-                              </tr>
-                              <tr className="row">
-                                <th className="col-md-6 col-sm-12" scope="row">Department</th>
-                                <td className="col-md-6 col-sm-12">{employeeRecord.department}</td>
-                              </tr>
-                              <tr className="row">
-                                <th className="col-md-6 col-sm-12" scope="row">Email</th>
-                                <td className="col-md-6 col-sm-12">{employeeRecord.email}</td>
-                              </tr>
-                              <tr className="row">
-                                <th className="col-md-6 col-sm-12" scope="row">Contact Number</th>
-                                <td className="col-md-6 col-sm-12">{employeeRecord.phone}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
-                  </div>
-                  </div> */}
-
-
+            
+       
+        
 
         </section>
     )

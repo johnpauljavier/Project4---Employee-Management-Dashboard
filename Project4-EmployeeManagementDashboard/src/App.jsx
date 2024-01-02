@@ -7,6 +7,7 @@ import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import EmployeeList from './pages/EmployeeList.jsx';
 import EmployeeCard from "./pages/EmployeeCard.jsx";
+import EditEmployee from "./pages/EditEmployee.jsx";
 import AddEmployee from "./pages/AddEmployee.jsx";
 
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="login" element={<Login />}/>
         <Route path="register" element={<Register />}/>
         <Route path="addEmployee" element={<AddEmployee />}/>
+        <Route path="editEmployee" element={<EditEmployee />}/>
         <Route path="employeeCard" element={<EmployeeCard />}/>
         <Route path="*" element={<NotFound />}/>
       </Route>
