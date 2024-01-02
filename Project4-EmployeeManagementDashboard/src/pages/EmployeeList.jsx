@@ -127,7 +127,7 @@ function EmployeeList(){
         // initialize config
         const db = getFirestore(firebaseApp);    
          
-        const [tempEmp] = employeeList.filter(li => li.id === id);
+        const [tempEmp] = employeeList.filter(tempEmp => tempEmp.employee_id === id);
 
         // confirm(`Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`).then(
         //     deleteDoc(doc(db, "employees", tempEmp.employee_id))
@@ -218,7 +218,7 @@ if(authenticated){
                 employeeList.map((employeeRecord) => (
                     // MAP through employee table to get the DATA
 
-                    <tr>
+                    <tr key={employeeRecord.employee_id}>
                         <td>{employeeRecord.firstname}</td>
                         <td>{employeeRecord.lastname}</td>
                         <td>{employeeRecord.jobTitle}</td>
@@ -232,7 +232,7 @@ if(authenticated){
                             data-bs-toggle="modal"
                             data-bs-target={`#employeeDetails-${employee.id}`}
                             >✏️</button>
-                            <button className="btn btn-secondary ms-1" onClick={() => deleteEmployee(employee.id)}>🗑️</button>
+                            <button className="btn btn-secondary ms-1" onClick={() => deleteEmployee(employeeRecord.employee_id)}>🗑️</button>
                         </td>
                      
                     </tr>
