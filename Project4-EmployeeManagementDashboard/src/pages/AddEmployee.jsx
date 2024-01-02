@@ -33,7 +33,7 @@ function AddEmployee(){
             addDoc(collection(db, 'employees'), employee);
 
             console.log(employee);
-            alert("Successful added employee");
+            alert(`Successful added ${employee.firstname} ${employee.lastname}`);
 
             setEmployee({
                 firstname: '',

@@ -164,7 +164,7 @@ function EmployeeList(){
 
 
     const handleViewMore = (id, firstname, lastname, jobTitle, department, email, phone) => {
-        const selectedEmployee = employeeList.find(selectedEmployee => employee.id === id);
+        const selectedEmployee = employeeList.find(selectedEmployee => selectedEmployee.employee_id === id);
       
         if (selectedEmployee) {
           // Display more details or perform actions with the selected employee's information
@@ -227,7 +227,7 @@ if(authenticated){
                         <td>{employeeRecord.phone}</td>
                         <td>{employeeRecord.status}</td>
                         <td>
-                            <button type="button" onClick={()=>handleViewMore(employee.id, employee.firstname, employee.lastname)} 
+                            <button type="button" onClick={()=>handleViewMore(employeeRecord.employee_id, employee.firstname, employee.lastname)} 
                             className="btn btn-dark"
                             data-bs-toggle="modal"
                             data-bs-target={`#employeeDetails-${employee.id}`}
@@ -254,11 +254,11 @@ if(authenticated){
         </table>
 
                                        {/* Modal */}
-            <div
+             {/* <div
               className="modal fade"
-              id={`employeeDetails-${employee.id}`}
+              id={`employeeDetails-${employeeRecord.employee_id}`}
               tabIndex="-1"
-              aria-labelledby={`employeeDetailsLabel-${employee.id}`}
+              aria-labelledby={`employeeDetailsLabel-${employeeRecord.employee_id}`}
               aria-hidden="true"
             >
               <div className="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-xl">
@@ -282,27 +282,27 @@ if(authenticated){
                             <tbody className="row m-2 border p-2 shadow">
                               <tr className="row">
                                 <th className="col-md-6 col-sm-12" scope="row">First Name</th>
-                                <td className="col-md-6 col-sm-12">{employeeList.firstname}</td>
+                                <td className="col-md-6 col-sm-12">{employeeRecord.firstname}</td>
                               </tr>
                               <tr className="row">
                                 <th className="col-md-6 col-sm-12" scope="row">Last Name</th>
-                                <td className="col-md-6 col-sm-12">{employeeList.lastname}</td>
+                                <td className="col-md-6 col-sm-12">{employeeRecord.lastname}</td>
                               </tr>
                               <tr className="row">
                                 <th className="col-md-6 col-sm-12" scope="row">Job Title</th>
-                                <td className="col-md-6 col-sm-12">{employeeList.jobTitle}</td>
+                                <td className="col-md-6 col-sm-12">{employeeRecord.jobTitle}</td>
                               </tr>
                               <tr className="row">
                                 <th className="col-md-6 col-sm-12" scope="row">Department</th>
-                                <td className="col-md-6 col-sm-12">{employeeList.department}</td>
+                                <td className="col-md-6 col-sm-12">{employeeRecord.department}</td>
                               </tr>
                               <tr className="row">
                                 <th className="col-md-6 col-sm-12" scope="row">Email</th>
-                                <td className="col-md-6 col-sm-12">{employeeList.email}</td>
+                                <td className="col-md-6 col-sm-12">{employeeRecord.email}</td>
                               </tr>
                               <tr className="row">
                                 <th className="col-md-6 col-sm-12" scope="row">Contact Number</th>
-                                <td className="col-md-6 col-sm-12">{employeeList.phone}</td>
+                                <td className="col-md-6 col-sm-12">{employeeRecord.phone}</td>
                               </tr>
                             </tbody>
                           </table>
@@ -312,7 +312,7 @@ if(authenticated){
                   </div>
                   </div>
                   </div>
-                  </div>
+                  </div> */}
 
 
 
