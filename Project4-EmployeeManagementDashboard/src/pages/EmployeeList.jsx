@@ -15,6 +15,8 @@ function EmployeeList(){
     const [employee, setEmployee] = useState({});
     const [employeeList, setEmployeeList] = useState([]);
 
+    const [editToggle, setEditToggle] = useState(false);
+
     const [authenticated, setAuthenticated] = useState(false);
     const [userProperties, setUserProperties] = useState({});
 
@@ -74,56 +76,68 @@ function EmployeeList(){
         navigate('/AddEmployee');
     }
 
-    const addNewEmployee = () => {
+
+    const updateEmployee = (employeeID, firstname, lastname, email, phoneNumber, address, department) => {
+        setEditToggle(true);
+        setEmployee({
+          employeeID: employeeID,
+          firstname: firstname,
+          lastname: lastname,
+          email: email,
+          phoneNumber: phoneNumber,
+          address: address,
+          department: department,
+          // Add other fields as needed
+        });
+      };
+      
+  
+    const handleEmployeeUpdate = () => {
+      const employeeRef = doc(db, "employees", employee.employeeID);
+  
+      updateDoc(employeeRef, {
+        firstname: employee.firstname,
+        lastname: employee.lastname,
+        email: employee.email,
+        phoneNumber: employee.phoneNumber,
+        address: employee.address,
+        department: employee.department,
+        // Add other fields as needed
+      }).then(() => {
+        setEditToggle(false);
+        setEmployee({
+          // Clear all fields after update
+          firstname: '',
+          lastname: '',
+          email: '',
+          phoneNumber: '',
+          address: '',
+          department: '',
+        });
+      }).catch((error) => {
+        // Handle error if update fails
+        console.error("Error updating document: ", error);
+      });
+    };
+      
 
 
-        // Initialize Cloud Firestore and get a reference to the service.
-        const db = getFirestore(firebaseApp);    
+    const deleteEmployee = (id, firstname, lastname) => {
         
-
-        if(employee.firstname === '' || employee.lastname === '' || employee.jobTitle === ''|| employee.department === '' || employee.email === '' || employee.phone === ''){
-            alert("Missing fields!");
-        }else{
-            setEmployeeList(
-                employeeList => [
-                    ...employeeList, employee
-                ]
-            );
-            addDoc(collection(db, 'employees'), employee);
-
-            setStudent({
-                firstname: '',
-                lastname: '',
-                jobTitle: '',
-                department: '',
-                email: '',
-                phone: '',
-            }); 
-
-        }
-        
-    }
-
-    const deleteEmployee = (id) => {
-
-        const [tempEmp] = employeeList.filter(tempEmp => employee.id === id);
-
-        // const employeeID = String(id);
         // initialize config
         const db = getFirestore(firebaseApp);    
          
-        
+        const [tempEmp] = employeeList.filter(li => li.id === id);
+
         // confirm(`Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`).then(
         //     deleteDoc(doc(db, "employees", tempEmp.employee_id))
             
         // );
 
 
-
-
         Swal.fire({
             icon: "question",
-            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname}?`,
+            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`,
             showDenyButton: true,
             confirmButtonText: "Delete",
             denyButtonText: "Cancel",
@@ -149,21 +163,38 @@ function EmployeeList(){
     }
 
 
+    const handleViewMore = (id, firstname, lastname, jobTitle, department, email, phone) => {
+        const selectedEmployee = employeeList.find(selectedEmployee => employee.id === id);
+      
+        if (selectedEmployee) {
+          // Display more details or perform actions with the selected employee's information
+          console.log(selectedEmployee); // For testing purposes
+        //   setEmployeeList(selectedEmployee);
+      
+          // Update state or perform actions to display more details of the selected employee
+          // For example:
+          // setSelectedEmployee(selectedEmployee);
+          // Open a modal to display the employee's details
+        } else {
+          console.error("Employee not found");
+        }
+      };
+
+
 if(authenticated){
     return(
         <section className="pt-5 mt-3">
             <h1 className="fw-bold">Welcome, { userProperties.displayName }  </h1>
             {/* {userProperties.displayName} */}
-            <p>This is a list of employee records.</p>
+            <p>This is a list of <span className="text-danger fw-bold">OnePlus</span> employee records.</p>
             <hr />
-
 
 
             <div className="bg-dark rounded mt-3 mb-2">
                 <h3 className="fw-bold">{employee.firstname} {employee.lastname} </h3>
                 <button className="btn btn-dark" onClick={navigateAddEmployee}>➕ Add Employee</button>
             </div>
-
+            
 
             <table className="table border shadow">
                     <thead> 
@@ -196,7 +227,11 @@ if(authenticated){
                         <td>{employeeRecord.phone}</td>
                         <td>{employeeRecord.status}</td>
                         <td>
-                            <button onClick={()=>handleEmployeeDetails()} className="btn btn-dark">✏️</button>
+                            <button type="button" onClick={()=>handleViewMore(employee.id, employee.firstname, employee.lastname)} 
+                            className="btn btn-dark"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#employeeDetails-${employee.id}`}
+                            >✏️</button>
                             <button className="btn btn-secondary ms-1" onClick={() => deleteEmployee(employee.id)}>🗑️</button>
                         </td>
                      
@@ -218,11 +253,67 @@ if(authenticated){
          </tbody>
         </table>
 
-        
+                                       {/* Modal */}
+            <div
+              className="modal fade"
+              id={`employeeDetails-${employee.id}`}
+              tabIndex="-1"
+              aria-labelledby={`employeeDetailsLabel-${employee.id}`}
+              aria-hidden="true"
+            >
+              <div className="modal-dialog modal-dialog-scrollable  modal-dialog-centered modal-xl">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h1 className="modal-title fs-5" id="exampleModalLabel">
+                      Employee Details
+                    </h1>
+                    <button
+                      type="button"
+                      className="btn-close"
+                      data-bs-dismiss="modal"
+                      aria-label="Close"
+                    ></button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="mb-5 p-5 border mt-5 shadow-md">
+                      <div className="card-body">
+                        <div className="table-responsive">
+                          <table className="table">
+                            <tbody className="row m-2 border p-2 shadow">
+                              <tr className="row">
+                                <th className="col-md-6 col-sm-12" scope="row">First Name</th>
+                                <td className="col-md-6 col-sm-12">{employeeList.firstname}</td>
+                              </tr>
+                              <tr className="row">
+                                <th className="col-md-6 col-sm-12" scope="row">Last Name</th>
+                                <td className="col-md-6 col-sm-12">{employeeList.lastname}</td>
+                              </tr>
+                              <tr className="row">
+                                <th className="col-md-6 col-sm-12" scope="row">Job Title</th>
+                                <td className="col-md-6 col-sm-12">{employeeList.jobTitle}</td>
+                              </tr>
+                              <tr className="row">
+                                <th className="col-md-6 col-sm-12" scope="row">Department</th>
+                                <td className="col-md-6 col-sm-12">{employeeList.department}</td>
+                              </tr>
+                              <tr className="row">
+                                <th className="col-md-6 col-sm-12" scope="row">Email</th>
+                                <td className="col-md-6 col-sm-12">{employeeList.email}</td>
+                              </tr>
+                              <tr className="row">
+                                <th className="col-md-6 col-sm-12" scope="row">Contact Number</th>
+                                <td className="col-md-6 col-sm-12">{employeeList.phone}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  </div>
+                  </div>
 
-
-
-        
 
 
         </section>
@@ -235,7 +326,8 @@ if(authenticated){
         )
     }
 
-    
+
+ 
 
 
 }

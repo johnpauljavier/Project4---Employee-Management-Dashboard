@@ -42,7 +42,7 @@ function Layout(){
         <main className="d-flex flex-column min-vh-100">
                 <nav className="navbar navbar-expand-md bg-dark fixed-top shadow">
                     <div className="container-fluid p-1 ps-4 pe-4">
-                        <Link className="navbar-brand fw-bold text-white" to="/">OnePlus</Link>
+                        <Link className="navbar-brand fw-bold text-danger" to="/">OnePlus</Link>
                         
                         <button className="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
