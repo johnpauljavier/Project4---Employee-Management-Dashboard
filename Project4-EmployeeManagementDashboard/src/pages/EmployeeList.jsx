@@ -8,7 +8,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2/dist/sweetalert2.js";
 import "sweetalert2/dist/sweetalert2.css";
 import "sweetalert2/dist/sweetalert2.js";
-import EditEmployee from "./EditEmployee.jsx";
+
 
 // Import AntDesign
 import React from 'react';
@@ -149,7 +149,7 @@ function EmployeeList(){
 
         Swal.fire({
             icon: "question",
-            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname} ${tempEmp.employee_id}?`,
+            title: `Are you sure you want to delete ${tempEmp.firstname} ${tempEmp.lastname}?`,
             showDenyButton: true,
             confirmButtonText: "Delete",
             denyButtonText: "Cancel",
